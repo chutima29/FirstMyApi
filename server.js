@@ -92,6 +92,79 @@ app.delete("/delete", (req, res) => {
       })
   }
 })
+//-----------------------------------update----------------------------------------------------------------
+app.put('/update', (req, res) => {
+  let id = req.body.id;
+  let name = req.body.name;
+  let code = req.body.code;
+  let qty = req.body.qty;
+
+  // validation
+  if ( !id || !code || !name || !qty) {
+      return res.status(400).send({ message: 'not information'});
+  } else {
+      dbCon.query('UPDATE stock SET name = ?, code = ?, qty = ? WHERE id = ?', 
+      [name, code, qty, id], (error, results, fields) => {
+          if (error) throw error;
+
+          let message = "";
+          if (results.changedRows === 0) {
+              message = "not found or data are same";
+          } else {
+              message = "successfully updated";
+          }
+
+          return res.send({data: results, message: message })
+      })
+  }
+})
+//--------------------------------------------Update Qty-----------------------------------------------------
+app.put('/updateqty', (req, res) => {
+  let id = req.body.id;
+  let qty = req.body.qty;
+
+  // validation
+  if ( !id || !qty) {
+      return res.status(400).send({ message: 'not information'});
+  } else {
+      dbCon.query('UPDATE stock SET  qty = ? WHERE id = ?', 
+      [qty, id], (error, results, fields) => {
+          if (error) throw error;
+
+          let message = "";
+          if (results.changedRows === 0) {
+              message = "not found or data are same";
+          } else {
+              message = "successfully updated";
+          }
+
+          return res.send({data: results, message: message })
+      })
+  }
+})
+//---------------------------------------insert admin to stock------------------------------------------------------------
+app.post("/insertadmin", (req, res) => {
+  
+  let name = req.body.name;
+  let code = req.body.code;
+  let qty = req.body.qty;
+  let user = req.body.user;
+ 
+
+  if (!name || !code|| !qty || !user ) {
+    return res.status(400).send({ message: "not infor" });
+  } else {
+    dbCon.query(
+      "INSERT INTO listadminselect (name, code, qty, user) VALUES(?, ?, ?, ?)",
+      [name, code, qty, user],
+      (error, results, fields) => {
+        if (error) throw error;
+        return res.send({ data: results, message: "successfully" });
+      }
+    );
+  }
+});
+
 //---------------------------------------------------------------------------------------------------
 app.listen(3000, () => {
   console.log("connect successfully on port 3000");
