@@ -22,7 +22,7 @@ let dbCon = mysql.createConnection({
 });
 dbCon.connect();
 //----------------------------------------show-----------------------------------------------
-app.get("/stock", (req, res) => {
+app.post("/stock", (req, res) => {
   dbCon.query("SELECT * FROM stock", (error, results, fields) => {
     if (error) throw error;
 
