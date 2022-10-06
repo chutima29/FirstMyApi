@@ -66,7 +66,7 @@ app.post("/insert", (req, res) => {
     return res.status(400).send({ message: "not infor" });
   } else {
     dbCon.query(
-      "INSERT INTO stock (Category, PartNo, Value, quantity,) VALUES(?, ?, ?, ?)",
+      "INSERT INTO stock(Category, PartNo, Value, quantity) VALUES(?, ?, ?, ?)",
       [Category, PartNo, Value, quantity],
       (error, results, fields) => {
         if (error) throw error;
