@@ -15,10 +15,10 @@ app.get("/", (req, res) => {
 });
 // connection to mysql database
 let dbCon = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "stocksystem",
+  host: "b9z0ryhnra16h6oi7fiu-mysql.services.clever-cloud.com",
+  user: "uzwh6iipjqdzjgtv",
+  password: "Rj95lB6BE0uHyRn9Ug7j",
+  database: "b9z0ryhnra16h6oi7fiu",
 });
 dbCon.connect();
 //----------------------------------------show-----------------------------------------------
@@ -57,15 +57,17 @@ app.get("/select/:id", (req, res) => {
 })
 //-------------------------------------------insert--------------------------------------------------------
 app.post("/insert", (req, res) => {
-  let name = req.body.name;
-  let code = req.body.code;
-  let qty = req.body.qty;
-  if (!name || !code || !qty) {
+  let Category = req.body.Category;
+  let PartNo = req.body.PartNo;
+  let Value = req.body.Value;
+  let quantity = req.body.quantity;
+
+  if (!Category || !PartNo || !Value || !quantity ) {
     return res.status(400).send({ message: "not infor" });
   } else {
     dbCon.query(
-      "INSERT INTO stock (name, code, qty) VALUES(?, ?, ?)",
-      [name, code, qty],
+      "INSERT INTO stock (Category, PartNo, Value, quantity,) VALUES(?, ?, ?, ?)",
+      [Category, PartNo, Value, quantity],
       (error, results, fields) => {
         if (error) throw error;
         return res.send({ data: results, message: "successfully" });
@@ -93,18 +95,19 @@ app.delete("/delete", (req, res) => {
   }
 })
 //-----------------------------------update----------------------------------------------------------------
-app.put('/update', (req, res) => {
+app.post('/update', (req, res) => {
   let id = req.body.id;
-  let name = req.body.name;
-  let code = req.body.code;
-  let qty = req.body.qty;
+  let Category = req.body.Category;
+  let PartNo = req.body.PartNo;
+  let Value = req.body.Value;
+  let quantity = req.body.quantity;
 
   // validation
-  if ( !id || !code || !name || !qty) {
+  if ( !id || !Category || !PartNo || !Value || !quantity ) {
       return res.status(400).send({ message: 'not information'});
   } else {
-      dbCon.query('UPDATE stock SET name = ?, code = ?, qty = ? WHERE id = ?', 
-      [name, code, qty, id], (error, results, fields) => {
+      dbCon.query('UPDATE stock SET Category = ?, PartNo = ?, Value = ?, quantity = ? WHERE id = ?', 
+      [Category, PartNo, Value, quantity, id], (error, results, fields) => {
           if (error) throw error;
 
           let message = "";
@@ -119,16 +122,16 @@ app.put('/update', (req, res) => {
   }
 })
 //--------------------------------------------Update Qty-----------------------------------------------------
-app.put('/updateqty', (req, res) => {
+app.post('/updateqty', (req, res) => {
   let id = req.body.id;
-  let qty = req.body.qty;
+  let quantity = req.body.quantity;
 
   // validation
-  if ( !id || !qty) {
+  if ( !id || !quantity ) {
       return res.status(400).send({ message: 'not information'});
   } else {
-      dbCon.query('UPDATE stock SET  qty = ? WHERE id = ?', 
-      [qty, id], (error, results, fields) => {
+      dbCon.query('UPDATE stock SET quantity = ? WHERE id = ?', 
+      [quantity , id], (error, results, fields) => {
           if (error) throw error;
 
           let message = "";
@@ -142,21 +145,35 @@ app.put('/updateqty', (req, res) => {
       })
   }
 })
-//---------------------------------------insert admin to stock------------------------------------------------------------
-app.post("/insertadmin", (req, res) => {
-  
-  let name = req.body.name;
-  let code = req.body.code;
-  let qty = req.body.qty;
-  let user = req.body.user;
- 
+//---------------------------------------------------------------------------------------------------
+app.post("/stockuser", (req, res) => {
+  dbCon.query("SELECT * FROM inputuser", (error, results, fields) => {
+    if (error) throw error;
 
-  if (!name || !code|| !qty || !user ) {
+    let message = "";
+    if (results === undefined || results.length == 0) {
+      message = "not information";
+    } else {
+      message = "Successfully";
+    }
+    return res.json(results);
+  });
+});
+//---------------------------------------------------------------------------------------------------
+
+app.post("/insertuser", (req, res) => {
+  let Category = req.body.Category;
+  let PartNo = req.body.PartNo;
+  let Value = req.body.Value;
+  let quantity = req.body.quantity;
+  let user = req.body.user;
+
+  if (!Category || !PartNo || !Value || !quantity  || !user ) {
     return res.status(400).send({ message: "not infor" });
   } else {
     dbCon.query(
-      "INSERT INTO listadminselect (name, code, qty, user) VALUES(?, ?, ?, ?)",
-      [name, code, qty, user],
+      "INSERT INTO inputuser (Category, PartNo, Value, quantity, user,) VALUES(?, ?, ?, ?, ?)",
+      [Category, PartNo, Value, quantity, user ],
       (error, results, fields) => {
         if (error) throw error;
         return res.send({ data: results, message: "successfully" });
@@ -165,7 +182,6 @@ app.post("/insertadmin", (req, res) => {
   }
 });
 
-//---------------------------------------------------------------------------------------------------
 app.listen(3000, () => {
   console.log("connect successfully on port 3000");
 });
