@@ -76,7 +76,7 @@ app.post("/insert", (req, res) => {
   }
 });
 //-----------------------------------------------delete----------------------------------------------------
-app.delete("/delete", (req, res) => {
+app.post("/delete", (req, res) => {
   let id = req.body.id
   if (!id) {
       return res.stas(400).send({message: "Please provide id"});
