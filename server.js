@@ -168,11 +168,11 @@ app.post("/insertuser", (req, res) => {
   let quantity = req.body.quantity;
   let user = req.body.user;
 
-  if (!Category || !PartNo || !Value || !quantity  || !user ) {
+  if (!Category || !PartNo || !Value || !quantity || !user ) {
     return res.status(400).send({ message: "not infor" });
   } else {
     dbCon.query(
-      "INSERT INTO inputuser (Category, PartNo, Value, quantity, user,) VALUES(?, ?, ?, ?, ?)",
+      "INSERT INTO inputuser(Category, PartNo, Value, quantity, user) VALUES(?, ?, ?, ?, ?)",
       [Category, PartNo, Value, quantity, user ],
       (error, results, fields) => {
         if (error) throw error;
